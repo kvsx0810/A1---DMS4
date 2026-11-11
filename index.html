@@ -2404,7 +2404,16 @@ $('chatForm').addEventListener('submit', e => {
   replyAsShipper(t, /đường|hẻm|lối|chỗ nào|ở đâu|địa chỉ|where|which way|address|alley/i.test(t) ? 'ask' : '');
 });
 document.querySelectorAll('#quickReplies button').forEach((b, k) => b.addEventListener('click', () => replyAsShipper(LANG === 'en' ? b.dataset.rEn : b.dataset.r, k === 1 ? 'ask' : '')));
-(async () => { if (window.claude) { try { sampleFn = await claude.use('sample'); } catch (e) {} } })();
+// Inside Claude the page asks Claude directly. Anywhere else (GitHub Pages) it goes through our small chat Worker,
+// which holds the API key. With no Worker configured the customers fall back to written lines.
+const CHAT_ENDPOINT = '';
+function workerSample() {
+  const call = async messages => { const r = await fetch(CHAT_ENDPOINT, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ messages, lang: LANG }) }); if (!r.ok) throw new Error('chat ' + r.status); return r.json(); };
+  const f = async messages => ({ text: (await call(messages)).text || '' });
+  f.json = async prompt => { const t = (await call([{ role: 'user', content: prompt }])).text || '', m = t.match(/\{[\s\S]*\}/); return m ? JSON.parse(m[0]) : null; };
+  return f;
+}
+(async () => { if (window.claude) { try { sampleFn = await claude.use('sample'); } catch (e) {} } else if (CHAT_ENDPOINT) sampleFn = workerSample(); })();
 // ---- phone UI ----
 let currentTab = 'order';
 const PHONE_APPS = () => [

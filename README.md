@@ -27,3 +27,17 @@ A PS1-style delivery game set on the real street network of District 3, Ho Chi M
 - Sound effects: Epidemic Sound, used under the author's Epidemic Sound subscription.
 - 3D engine: three.js (MIT).
 - Fonts: Be Vietnam Pro, Barlow Condensed and IBM Plex Mono (SIL Open Font License), from Google Fonts.
+
+## Chat backend (optional)
+
+Static hosting has no Claude access, so customer chat on GitHub Pages goes through a small Cloudflare Worker in `worker/`. The Worker keeps the Anthropic API key secret, accepts requests only from the game's origin, and limits each visitor to 12 messages a minute.
+
+```
+cd worker
+npm install
+npx wrangler login
+npx wrangler secret put ANTHROPIC_API_KEY
+npx wrangler deploy
+```
+
+Put the deployed URL plus `/chat` into `CHAT_ENDPOINT` in `index.html`. If `CHAT_ENDPOINT` is left empty, customers reply with written lines.

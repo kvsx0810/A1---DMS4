@@ -1,0 +1,11 @@
+name = "hem-chat"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# where the game is hosted; requests from anywhere else are refused
+ALLOWED_ORIGINS = "https://kvsx0810.github.io"
+# the model the customers talk with
+MODEL = "claude-opus-5-5"
+# the API key is a secret, never stored here: npx wrangler secret put ANTHROPIC_API_KEY
