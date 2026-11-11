@@ -2,7 +2,7 @@
 
 A PS1-style delivery game set on the real street network of District 3, Ho Chi Minh City. You are a new delivery rider and learn to read Saigon alley addresses such as `304/28/8 Lê Văn Sỹ`.
 
-**Play:** https://kvsx0810.github.io/hem-vo-tan/
+**Play:** https://kvsx0810.github.io/A1---DMS4/
 
 ## How to play
 
