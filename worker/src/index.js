@@ -19,6 +19,7 @@ let picked = null; const bad = new Set();   // models that answered 404 for this
 const API = "https://generativelanguage.googleapis.com/v1beta";
 async function chooseModel(env) {
   if (picked && !bad.has(picked)) return picked;
+  if (env.MODEL && !bad.has(env.MODEL)) return (picked = env.MODEL);   // trust the configured model; list models only after a 404
   const r = await fetch(`${API}/models?pageSize=200`, { headers: { "x-goog-api-key": env.GEMINI_API_KEY } });
   if (!r.ok) return env.MODEL || "gemini-flash-latest";
   const names = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace(/^models\//, "")).filter(n => !bad.has(n));
@@ -62,7 +63,7 @@ export default {
           body: JSON.stringify({
             systemInstruction: { parts: [{ text: SYSTEM + (body.lang === "en" ? "\nAlways answer in English." : "\nLuôn trả lời bằng tiếng Việt.") }] },
             contents,
-            generationConfig: { maxOutputTokens: 1024, temperature: 0.9 },
+            generationConfig: { maxOutputTokens: 160, temperature: 0.9 },
           }),
         });
       } catch { return json({ error: "upstream unreachable" }, 502, h); }
