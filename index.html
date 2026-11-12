@@ -2406,7 +2406,7 @@ $('chatForm').addEventListener('submit', e => {
 document.querySelectorAll('#quickReplies button').forEach((b, k) => b.addEventListener('click', () => replyAsShipper(LANG === 'en' ? b.dataset.rEn : b.dataset.r, k === 1 ? 'ask' : '')));
 // Inside Claude the page asks Claude directly. Anywhere else (GitHub Pages) it goes through our small chat Worker,
 // which holds the API key. With no Worker configured the customers fall back to written lines.
-const CHAT_ENDPOINT = '';
+const CHAT_ENDPOINT = 'https://hem-chat.hung-trinh0810.workers.dev/chat';
 function workerSample() {
   const call = async messages => { const r = await fetch(CHAT_ENDPOINT, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ messages, lang: LANG }) }); if (!r.ok) throw new Error('chat ' + r.status); return r.json(); };
   const f = async messages => ({ text: (await call(messages)).text || '' });

@@ -2,10 +2,12 @@ name = "hem-chat"
 main = "src/index.js"
 compatibility_date = "2026-10-01"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+preview_urls = false
 
 [vars]
 # where the game is hosted; requests from anywhere else are refused
 ALLOWED_ORIGINS = "https://kvsx0810.github.io"
-# the Gemini model the customers talk with (any model your Gemini API plan includes)
+# preferred Gemini model; if your key cannot use it, the Worker picks the newest Flash model on your account
 MODEL = "gemini-2.5-flash"
 # the API key is a secret, never stored here: npx wrangler secret put GEMINI_API_KEY

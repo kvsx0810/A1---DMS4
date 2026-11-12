@@ -13,12 +13,27 @@ function cors(origin, env) {
   const ok = allowed.includes(origin) || /^http:\/\/localhost(:\d+)?$/.test(origin);
   return { "Access-Control-Allow-Origin": ok ? origin : allowed[0] || "*", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "content-type", "Vary": "Origin" };
 }
+// Pick a model the key can actually use: the configured one if it exists, otherwise the newest Flash model
+// on the account. Remembered per Worker instance.
+let picked = null;
+const API = "https://generativelanguage.googleapis.com/v1beta";
+async function chooseModel(env) {
+  if (picked) return picked;
+  const r = await fetch(`${API}/models?pageSize=200`, { headers: { "x-goog-api-key": env.GEMINI_API_KEY } });
+  if (!r.ok) return env.MODEL || "gemini-flash-latest";
+  const names = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace(/^models\//, ""));
+  if (env.MODEL && names.includes(env.MODEL)) return (picked = env.MODEL);
+  const ver = n => parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/) || [0, 0])[1]);
+  const flash = names.filter(n => /flash/.test(n) && !/image|tts|audio|live|embedding|exp|lite/.test(n)).sort((a, b) => ver(b) - ver(a) || a.length - b.length);
+  return (picked = flash[0] || names.find(n => /gemini/.test(n)) || env.MODEL);
+}
 const json = (body, status, headers) => new Response(JSON.stringify(body), { status, headers: { ...headers, "content-type": "application/json" } });
 
 export default {
   async fetch(req, env) {
     const origin = req.headers.get("Origin") || "", h = cors(origin, env);
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: h });
+    if (req.method === "GET" && new URL(req.url).pathname === "/health") return json({ ok: true, model: await chooseModel(env) }, 200, h);
     if (req.method !== "POST" || new URL(req.url).pathname !== "/chat") return json({ error: "not found" }, 404, h);
     if (h["Access-Control-Allow-Origin"] !== origin) return json({ error: "origin not allowed" }, 403, h);
 
@@ -35,10 +50,10 @@ export default {
 
     // Gemini calls the assistant side "model"
     const contents = msgs.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content.slice(0, MAX_CHARS) }] }));
-    const model = env.MODEL || "gemini-2.5-flash";
     let r;
     try {
-      r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+      const model = await chooseModel(env);
+      r = await fetch(`${API}/models/${encodeURIComponent(model)}:generateContent`, {
         method: "POST",
         headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
         body: JSON.stringify({
@@ -49,6 +64,7 @@ export default {
       });
     } catch { return json({ error: "upstream unreachable" }, 502, h); }
     if (r.status === 429) return json({ error: "busy" }, 429, h);
+    if (r.status === 404) picked = null;     // the model went away: choose again next time
     if (!r.ok) return json({ error: "upstream error", status: r.status }, 502, h);
 
     const data = await r.json();
