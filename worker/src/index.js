@@ -15,13 +15,13 @@ function cors(origin, env) {
 }
 // Pick a model the key can actually use: the configured one if it exists, otherwise the newest stable
 // Flash-Lite model on the account (the cheapest family). Remembered per Worker instance.
-let picked = null;
+let picked = null; const bad = new Set();   // models that answered 404 for this key
 const API = "https://generativelanguage.googleapis.com/v1beta";
 async function chooseModel(env) {
-  if (picked) return picked;
+  if (picked && !bad.has(picked)) return picked;
   const r = await fetch(`${API}/models?pageSize=200`, { headers: { "x-goog-api-key": env.GEMINI_API_KEY } });
   if (!r.ok) return env.MODEL || "gemini-flash-latest";
-  const names = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace(/^models\//, ""));
+  const names = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace(/^models\//, "")).filter(n => !bad.has(n));
   if (env.MODEL && names.includes(env.MODEL)) return (picked = env.MODEL);
   const ver = n => parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/) || [0, 0])[1]);
   // cheapest first: the newest stable Flash-Lite, then the newest stable Flash
@@ -35,7 +35,7 @@ export default {
   async fetch(req, env) {
     const origin = req.headers.get("Origin") || "", h = cors(origin, env);
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: h });
-    if (req.method === "GET" && new URL(req.url).pathname === "/health") return json({ ok: true, model: await chooseModel(env) }, 200, h);
+    if (req.method === "GET" && new URL(req.url).pathname === "/health") return json({ ok: true, model: await chooseModel(env), skipped: [...bad] }, 200, h);
     if (req.method !== "POST" || new URL(req.url).pathname !== "/chat") return json({ error: "not found" }, 404, h);
     if (h["Access-Control-Allow-Origin"] !== origin) return json({ error: "origin not allowed" }, 403, h);
 
@@ -53,21 +53,24 @@ export default {
     // Gemini calls the assistant side "model"
     const contents = msgs.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content.slice(0, MAX_CHARS) }] }));
     let r;
-    try {
+    for (let attempt = 0; attempt < 4; attempt++) {           // a model the key cannot use: drop it and try the next cheapest
       const model = await chooseModel(env);
-      r = await fetch(`${API}/models/${encodeURIComponent(model)}:generateContent`, {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM + (body.lang === "en" ? "\nAlways answer in English." : "\nLuôn trả lời bằng tiếng Việt.") }] },
-          contents,
-          generationConfig: { maxOutputTokens: 1024, temperature: 0.9 },
-        }),
-      });
-    } catch { return json({ error: "upstream unreachable" }, 502, h); }
+      try {
+        r = await fetch(`${API}/models/${encodeURIComponent(model)}:generateContent`, {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: SYSTEM + (body.lang === "en" ? "\nAlways answer in English." : "\nLuôn trả lời bằng tiếng Việt.") }] },
+            contents,
+            generationConfig: { maxOutputTokens: 1024, temperature: 0.9 },
+          }),
+        });
+      } catch { return json({ error: "upstream unreachable" }, 502, h); }
+      if (r.status !== 404) break;
+      bad.add(model); picked = null;
+    }
     if (r.status === 429) return json({ error: "busy" }, 429, h);
-    if (r.status === 404) picked = null;     // the model went away: choose again next time
-    if (!r.ok) return json({ error: "upstream error", status: r.status }, 502, h);
+    if (!r.ok) { const detail = (await r.text().catch(() => "")).slice(0, 300); return json({ error: "upstream error", status: r.status, detail }, 502, h); }
 
     const data = await r.json();
     const cand = (data.candidates || [])[0];

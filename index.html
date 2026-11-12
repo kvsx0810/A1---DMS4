@@ -26,7 +26,7 @@ button { font-family: var(--f-body); }
 #app { position: fixed; inset: 0; }
 #app > canvas:not(.radar) { display: block; width: 100%; height: 100%; touch-action: none; image-rendering: pixelated; }
 .radar { position: absolute; left: max(18px, env(safe-area-inset-left, 0px)); bottom: calc(24px + env(safe-area-inset-bottom, 0px)); width: 180px; height: 180px; border-radius: 50%; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
-.money { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: max(110px, calc(env(safe-area-inset-right, 0px) + 110px)); font-family: var(--f-display); font-weight: 900; font-size: 34px; color: #7ad37f;
+.money { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: max(160px, calc(env(safe-area-inset-right, 0px) + 160px)); font-family: var(--f-display); font-weight: 900; font-size: 34px; color: #7ad37f;
   text-shadow: -2px -2px 0 #102010, 2px -2px 0 #102010, -2px 2px 0 #102010, 2px 2px 0 #102010, 0 3px 0 #102010; font-variant-numeric: tabular-nums; pointer-events: none; }
 .objective { position: absolute; left: 216px; right: 330px; bottom: calc(26px + env(safe-area-inset-bottom, 0px)); margin: 0 auto; max-width: 560px; text-align: center; pointer-events: none;
   font-family: var(--f-display); font-weight: 700; font-size: 21px; line-height: 1.3; color: #fff; text-shadow: -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000; }
@@ -145,11 +145,25 @@ button { font-family: var(--f-body); }
 .ph-note { margin: 0; font-size: 14px; color: var(--muted); }
 .ph-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
 .ph-btns button:hover { background: #f1fbf4; }
-.menu-btn { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); font: inherit; font-weight: 700; font-size: 15px;
-  background: var(--paper); color: var(--ink); border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; box-shadow: 0 6px 18px rgba(60, 30, 20, .25); }
-.menu { position: absolute; top: calc(58px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); background: var(--paper); border-radius: 14px; padding: 6px; display: grid; min-width: 190px; box-shadow: 0 10px 28px rgba(60, 30, 20, .3); }
-.menu button { font: inherit; font-size: 15px; text-align: left; background: none; border: 0; padding: 9px 12px; border-radius: 9px; color: var(--ink); cursor: pointer; }
-.menu button:hover { background: var(--paper-2); }
+.menu-btn { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); font: 800 17px var(--f-sign); text-transform: uppercase; letter-spacing: .04em;
+  background: #f4f1ea; color: #111; border: 3px solid #111; border-radius: 3px; padding: 5px 14px 3px; cursor: pointer; box-shadow: 3px 3px 0 #111; z-index: 4; }
+.menu.pause { position: absolute; inset: 0; z-index: 9; display: grid; place-items: center; padding: 16px; background: rgba(8,10,14,.7); overflow-y: auto; }
+.pm-card { width: min(760px, 100%); background: #1f4e9c; color: #fff; border-radius: 8px; padding: 22px 24px 24px; box-shadow: inset 0 0 0 4px #1f4e9c, inset 0 0 0 7px #f4f1ea, 8px 8px 0 rgba(0,0,0,.55); display: grid; gap: 16px; }
+.pm-title { justify-self: start; font: 800 30px/1 var(--f-sign); letter-spacing: .06em; background: #d9483b; padding: 6px 14px 4px; transform: rotate(-1.5deg); box-shadow: 3px 3px 0 rgba(0,0,0,.4); }
+.pm-cols { display: grid; grid-template-columns: 220px 1fr; gap: 22px; }
+.pm-nav { display: grid; gap: 7px; align-content: start; }
+.pm-nav button { text-align: left; font: 700 18px var(--f-sign); text-transform: uppercase; letter-spacing: .02em; color: #111; background: #f4f1ea; border: 3px solid #111; border-radius: 3px; padding: 7px 12px 5px; cursor: pointer; box-shadow: 3px 3px 0 #111; }
+.pm-nav button:hover, .pm-nav button:focus-visible { background: #f2c230; outline: none; }
+.pm-nav .pm-go { background: #1fa65a; color: #fff; } .pm-nav .pm-danger { background: #ffd2cc; margin-top: 8px; }
+.pm-set { display: grid; gap: 8px; align-content: start; background: rgba(0,0,0,.18); border-radius: 4px; padding: 12px 16px 16px; }
+.pm-set h4 { margin: 6px 0 0; font: 800 15px var(--f-sign); letter-spacing: .08em; text-transform: uppercase; color: #f2c230; }
+.pm-set label { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 12px; font: 600 16px var(--f-sign); }
+.pm-set label.chk { grid-template-columns: auto 1fr; justify-content: start; }
+.pm-set input[type=range] { width: 100%; accent-color: #f2c230; }
+.pm-set select { font: 700 15px var(--f-sign); padding: 4px 8px; border: 2px solid #111; border-radius: 3px; }
+.pm-set input[type=checkbox] { width: 18px; height: 18px; accent-color: #f2c230; }
+.pm-set .lang button { color: #fff; border-color: rgba(255,255,255,.5); } .pm-set .lang button[aria-pressed="true"] { background: #fff; color: #111; }
+@media (max-width: 640px) { .pm-cols { grid-template-columns: 1fr; } .pm-set label { grid-template-columns: 110px 1fr; } }
 :focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 .touch { position: absolute; inset: auto 0 0 0; display: none; justify-content: space-between; pointer-events: none;
   padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -343,16 +357,36 @@ button { font-family: var(--f-body); }
     </div>
   </div>
   <button class="ph-toggle" id="phToggle" aria-expanded="true">Cất điện thoại (P)</button>
-  <button class="menu-btn" id="menuBtn" aria-expanded="false">Menu</button>
-  <div class="menu" id="menu" hidden>
-    <button id="helpBtn" data-en="How to play">Cách chơi</button>
-    <button id="mMap" data-en="Map (M)">Bản đồ (M)</button>
-    <button id="mGoals" data-en="My goals">Mục tiêu</button>
-    <button id="mHome" data-en="Directions home">Chỉ đường về phòng</button>
-    <button id="skipBtn" data-en="Cancel this order">Huỷ đơn này</button>
-    <button id="langBtn">English</button>
-    <button id="muteBtn">Tắt tiếng</button>
-    <span hidden><button id="newBtn"></button><button id="hornBtn"></button></span>
+  <button class="menu-btn" id="menuBtn" aria-expanded="false">Menu · Esc</button>
+  <div class="menu pause" id="menu" hidden>
+    <div class="pm-card" role="dialog" aria-label="Menu">
+      <b class="pm-title" data-en="PAUSED">TẠM DỪNG</b>
+      <div class="pm-cols">
+        <nav class="pm-nav">
+          <button id="pmResume" class="pm-go" data-en="Resume (Esc)">Chơi tiếp (Esc)</button>
+          <button id="helpBtn" data-en="How to play">Cách chơi</button>
+          <button id="mMap" data-en="Map (M)">Bản đồ (M)</button>
+          <button id="mGoals" data-en="My goals">Mục tiêu</button>
+          <button id="mHome" data-en="Directions home">Chỉ đường về phòng</button>
+          <button id="skipBtn" data-en="Cancel this order">Huỷ đơn này</button>
+          <button id="pmRestart" class="pm-danger" data-en="Start over">Chơi lại từ đầu</button>
+        </nav>
+        <section class="pm-set">
+          <h4 data-en="Sound">Âm thanh</h4>
+          <label><span data-en="Master">Tổng</span><input type="range" id="sVol" min="0" max="100"></label>
+          <label><span data-en="Street & rain">Tiếng phố, mưa</span><input type="range" id="sAmb" min="0" max="100"></label>
+          <label><span data-en="Engine">Máy xe</span><input type="range" id="sEng" min="0" max="100"></label>
+          <label><span data-en="Horns & effects">Còi, hiệu ứng</span><input type="range" id="sSfx" min="0" max="100"></label>
+          <h4 data-en="Picture">Hình ảnh</h4>
+          <label><span data-en="PS1 resolution">Độ phân giải PS1</span><select id="sRes"><option value="240">240p</option><option value="300">300p</option><option value="420">420p</option></select></label>
+          <label class="chk"><input type="checkbox" id="sShake"><span data-en="Camera shake">Rung màn hình</span></label>
+          <label class="chk"><input type="checkbox" id="sKeys"><span data-en="Show key hints">Hiện phím tắt</span></label>
+          <h4 data-en="Language">Ngôn ngữ</h4>
+          <div class="lang"><button data-lang="vi">Tiếng Việt</button><button data-lang="en">English</button></div>
+        </section>
+      </div>
+    </div>
+    <span hidden><button id="newBtn"></button><button id="hornBtn"></button><button id="langBtn"></button><button id="muteBtn"></button></span>
   </div>
   <div hidden><span id="addr"></span><span id="addrNear"></span><b id="spd"></b><span id="stats"></span><button id="qBtn"></button><button id="rainBtn"></button></div>
   <div class="touch" aria-hidden="true">
@@ -516,7 +550,7 @@ renderer.shadowMap.enabled = false;
 app.prepend(renderer.domElement);
 const C = h => new THREE.Color(h).convertSRGBToLinear();
 const scene = new THREE.Scene();
-const SKY = C('#d3dfe6');
+const SKY = C('#b9d5ec');
 scene.background = SKY;
 scene.fog = new THREE.Fog(SKY, 18, 68);
 const camera = new THREE.PerspectiveCamera(62, 1, 0.1, 400);
@@ -1296,11 +1330,12 @@ function genCell(ci, cj) {
       }
     }
     // the green alley-name sign over every alley mouth
-    if (!street && p.first && w.d0 === 0 && al.level) {
+    const signA = (w.par >= 0 ? RW[w.par].hw : 0) + 0.9;      // past the edge of the road the alley leaves from
+    if (!street && p.first && w.d0 === 0 && al.level && signA < p.L - 0.3) {
       const sg = K.atlas.sign(al.level === 1 ? `HẺM ${al.num} ${String(al.street).toUpperCase()}` : `HẺM ${al.num}`);
       if (sg) {
-        const sw = Math.min(3.4, 2 * hw + 0.6), sh = sw / 8, c = fpt(f, 1.0, 3.75, 0), rx = -p.uz, rz = p.ux, [u0, v0, u1, v1] = sg.uv, e = .02;
-        fbox(K.L, f, 1.0, 4.05, 0, .08, .08, 2 * hw, POLE);
+        const sw = Math.min(3.4, 2 * hw + 0.6), sh = sw / 8, c = fpt(f, signA, 3.75, 0), rx = -p.uz, rz = p.ux, [u0, v0, u1, v1] = sg.uv, e = .02;
+        fbox(K.L, f, signA, 4.05, 0, .08, .08, 2 * hw, POLE);
         const Q = (sgn, flip) => K.T.quad([
           [c[0] - rx * sw / 2 * flip + p.ux * e * sgn, c[1] - sh / 2, c[2] - rz * sw / 2 * flip + p.uz * e * sgn], [c[0] + rx * sw / 2 * flip + p.ux * e * sgn, c[1] - sh / 2, c[2] + rz * sw / 2 * flip + p.uz * e * sgn],
           [c[0] + rx * sw / 2 * flip + p.ux * e * sgn, c[1] + sh / 2, c[2] + rz * sw / 2 * flip + p.uz * e * sgn], [c[0] - rx * sw / 2 * flip + p.ux * e * sgn, c[1] + sh / 2, c[2] - rz * sw / 2 * flip + p.uz * e * sgn]],
@@ -1590,7 +1625,7 @@ let eng2 = null, cityGain = null, npcGain = null, npcEng = null, hornT = 3;
 let ambFilter = null;
 const SFX = window.__sfx = {}; let sfxOut = null, engLoop = null, engLoopGain = null, ambGain = null, rainGain = null, passCd = 0;
 async function loadSfx() {
-  sfxOut = ac.createGain(); sfxOut.gain.value = muted ? 0 : 1; sfxOut.connect(ac.destination);
+  sfxOut = ac.createGain(); sfxOut.gain.value = muted ? 0 : SET.vol / 100; sfxOut.connect(ac.destination);
   await Promise.all(['engine', 'ambience', 'rain', 'horn', 'notif', 'crash', 'cash', 'passby'].map(async n => {
     try { const r = await fetch(`sfx/${n}.mp3`); if (r.ok) SFX[n] = await ac.decodeAudioData(await r.arrayBuffer()); } catch (e) {}
   }));
@@ -1607,7 +1642,7 @@ function playSfx3D(n, x, z, vol = 1, rate = 1) {
 }
 function playSfx(n, vol = 1, rate = 1, pan = 0) {
   if (!ac || muted || !SFX[n] || !sfxOut) return false;
-  const src = ac.createBufferSource(), g = ac.createGain(); src.buffer = SFX[n]; src.playbackRate.value = rate; g.gain.value = vol;
+  const src = ac.createBufferSource(), g = ac.createGain(); src.buffer = SFX[n]; src.playbackRate.value = rate; g.gain.value = vol * SET.sfx / 100;
   let node = src.connect(g); if (pan && ac.createStereoPanner) { const pn = ac.createStereoPanner(); pn.pan.value = pan; node = node.connect(pn); }
   node.connect(sfxOut); src.start(); return true;
 }
@@ -1652,7 +1687,7 @@ $('muteBtn').addEventListener('click', () => {
   muted = !muted; $('muteBtn').textContent = muted ? tr('Bật tiếng', 'Sound on') : tr('Tắt tiếng', 'Mute');
   if (engGain) engGain.gain.value = muted ? 0 : 0.035;
   if (cityGain) cityGain.gain.value = muted || ambGain ? 0 : 0.07;
-  if (sfxOut) sfxOut.gain.value = muted ? 0 : 1;
+  if (sfxOut) sfxOut.gain.value = muted ? 0 : SET.vol / 100;
   if (npcGain) npcGain.gain.value = 0;
 });
 
@@ -1671,7 +1706,7 @@ function newAlley() {
     toast(tr('Sang khu phố mới', 'New neighbourhood')); order = null; if (started) setTimeout(offerOrder, 300);
 }
 $('newBtn').addEventListener('click', newAlley);
-$('menuBtn').addEventListener('click', () => { const m = $('menu'); m.hidden = !m.hidden; $('menuBtn').setAttribute('aria-expanded', !m.hidden); });
+$('menuBtn').addEventListener('click', () => { if (paused) closeMenu(); else openPause(); });
 $('menu').addEventListener('click', e => { if (e.target.closest('button')) { $('menu').hidden = true; $('menuBtn').setAttribute('aria-expanded', false); } });
 // ---- what your rider looks like (saved with the game) ----
 let look = { body: 'm', skin: 1, helm: 0, pants: 0, mask: 0 };
@@ -1814,8 +1849,8 @@ let raining = false; rain.visible = false;
 // weather: sun, clouds, haze, drizzle, rain, thunderstorm. Each sets how grey the sky is, how far you can see, how hard it rains.
 const WX = {
   sun: { vi: 'Nắng', en: 'Sunny', ic: '☀', grey: 0, far: 135, drops: 0 },
-  cloud: { vi: 'Nhiều mây', en: 'Cloudy', ic: '☁', grey: .3, far: 115, drops: 0 },
-  haze: { vi: 'Âm u', en: 'Hazy', ic: '≋', grey: .2, far: 75, drops: 0 },
+  cloud: { vi: 'Nhiều mây', en: 'Cloudy', ic: '☁', grey: .25, far: 120, drops: 0 },
+  haze: { vi: 'Âm u', en: 'Hazy', ic: '≋', grey: .18, far: 95, drops: 0 },
   drizzle: { vi: 'Mưa phùn', en: 'Drizzle', ic: '☂', grey: .4, far: 95, drops: 500 },
   rain: { vi: 'Mưa', en: 'Rain', ic: '☂', grey: .55, far: 78, drops: 1300 },
   storm: { vi: 'Giông', en: 'Storm', ic: '⚡', grey: .75, far: 60, drops: 1800 },
@@ -2048,12 +2083,12 @@ const far = (h, a, b) => { const d = Math.hypot(h.pos[0] - bike.x, h.pos[2] - bi
 // ---- the story: one day, five orders, one rule per order, light moving from morning to night ----
 const GOAL = 100000;
 const STORY = [
-  { h: 7, m: 0, title: 'Bên phải số chẵn', titleEn: 'Even numbers on the right', level: 1, sky: '#d6e0e6', hemi: 0.72, sun: '#fff4e4', sunI: 0.95,
+  { h: 7, m: 0, title: 'Bên phải số chẵn', titleEn: 'Even numbers on the right', level: 1, sky: '#b9d5ec', hemi: 0.74, sun: '#fff4e4', sunI: 0.95,
     mentor: ['đơn đầu hả con', 'nhớ nè, đi từ đầu hẻm vô thì bên phải là số chẵn, bên trái số lẻ', 'coi số chẵn hay lẻ trước rồi hẵng ngó bên'],
     cust: ['Bà Sáu', 'con ơi nhà bà có giàn bông giấy đỏ nha con, ko gấp đâu'], persona: 'bà cụ hơn 70 tuổi vui tính, sống cùng con cháu, hay gọi shipper là con',
     mentorEn: ['first order huh', 'remember: walking in from the alley mouth, even numbers on the right, odd on the left', 'check if it’s even or odd first, then look at that side'],
     custEn: ['Grandma Sáu', 'my house has the red bougainvillea dear, no rush'], personaEn: 'a cheerful grandmother over 70 who lives with her family and calls the rider "dear"' },
-  { h: 10, m: 30, title: 'Hẻm mang số của nhà đầu hẻm', titleEn: 'An alley takes the number of the house at its mouth', level: 1, sky: '#c3d8e8', hemi: 0.8, sun: '#ffffff', sunI: 1.05,
+  { h: 10, m: 30, title: 'Hẻm mang số của nhà đầu hẻm', titleEn: 'An alley takes the number of the house at its mouth', level: 1, sky: '#9fc6ea', hemi: 0.82, sun: '#ffffff', sunI: 1.05,
     mentor: ['hẻm 284 là tại nó nằm sát nhà 284 ngoài mặt đường đó', 'ngoài đường đang số mấy thì đoán ra hẻm nằm khúc nào'],
     cust: ['Anh Khoa', 'e ơi a đang họp, tới móc lên cửa giúp a nha'], persona: 'dân văn phòng làm ở nhà, đang họp, lịch sự nhưng bận',
     mentorEn: ['alley 284 is called that cos it starts right next to house 284 on the main road', 'watch the numbers on the street and you’ll know roughly where the alley is'],
@@ -2116,7 +2151,7 @@ function dialog(who, text, opts) {
   opts.forEach((o, k) => { const b = document.createElement('button'); b.innerHTML = `<kbd>${k + 1}</kbd>`; b.append(o.label); b.onclick = () => pickOpt(k); $('dlgOpts').append(b); });
   $('dlg').hidden = false; $('speech').hidden = true;
 }
-function closeDlg() { dlgOpen = false; $('dlg').hidden = true; }
+function closeDlg() { dlgOpen = false; $('dlg').hidden = true; lastClose = performance.now(); }
 function pickOpt(k) { const o = dlgOpts[k]; if (!o) return; closeDlg(); if (o.fn) o.fn(); }
 addEventListener('keydown', e => {
   if (!dlgOpen) return;
@@ -2287,7 +2322,7 @@ function setTod(c) { tod.sky = C(c.sky); tod.hemi = c.hemi; tod.sun = C(c.sun); 
 function updateTod(dt) {
   const k = Math.min(1, dt * 0.6);
   const W = WX[wx], skyT = tod.sky.clone().lerp(GREYSKY, W.grey);
-  SKY.lerp(skyT, k); scene.fog.color.copy(SKY); scene.fog.far += (W.far - scene.fog.far) * k; scene.fog.near += (W.far * .35 - scene.fog.near) * k;
+  SKY.lerp(skyT, k); scene.fog.color.copy(SKY); scene.fog.far += (W.far - scene.fog.far) * k; scene.fog.near += (W.far * .6 - scene.fog.near) * k;
   if (wx === 'storm' && started && (flashT -= dt) < 0) { flashT = 5 + Math.random() * 9; lightning(); }
   if (!story && started && (wxT -= dt) < 0) { wxT = 70 + Math.random() * 90; const keys = Object.keys(WX), nx = keys[(Math.random() * keys.length) | 0]; if (nx !== wx) { setWeather(nx); notify('news', tr(`Thời tiết: ${WX[nx].vi}`, `Weather: ${WX[nx].en}`), WX[nx].drops ? tr('Phụ phí mưa +5.000đ/đơn. Đường trơn, chạy chậm.', 'Rain bonus +5.000đ/order. Roads are slippery.') : tr('Trời đổi gió.', 'The weather turns.')); } } hemi.intensity += (tod.hemi - hemi.intensity) * k;
   sun.color.lerp(tod.sun, k); sun.intensity += (tod.sunI - sun.intensity) * k;
@@ -2681,7 +2716,7 @@ function updateHud(dt = 0) {
   $('phClock').textContent = story ? hhmm(gameMin) : `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   let html = '';
   const first = story && day === 1 && chapterIdx <= 0;
-  if ($('keyhint').hidden !== !(started && first && o && o.stage !== 'offer')) $('keyhint').hidden = !(started && first && o && o.stage !== 'offer');
+  const kh = SET.keys && started && (first || total < 3) && !inRoom; if ($('keyhint').hidden !== !kh) $('keyhint').hidden = !kh;
   if (!started) html = '';
   else if (!o && first) html = tr('Đây là <b>phòng trọ</b> của bạn, dấu nhà xanh trên radar. Tối về đây ngủ. Chờ chút, app sắp có đơn.', 'This is <b>your room</b>, the green house on the radar. You sleep here at night. Hang on, an order is coming.');
   else if (!o) html = tr('Đang chờ đơn mới…', 'Waiting for a new order…');
@@ -2691,7 +2726,36 @@ function updateHud(dt = 0) {
   if (o && o.stage !== 'offer') html = first && o.stage === 'pickup' && total === 0 ? tr('Chạy theo <b>cột sáng vàng</b>. Dừng xe rồi mới mở điện thoại (P), lúc đó không ai tông bạn.', 'Ride to the <b>yellow beam</b>. Stop before using the phone (P): nobody can hit you then.') : '';   // the tracker carries the rest
   if (ob.innerHTML !== html) ob.innerHTML = html;
 }
-const closeMenu = () => { $('menu').hidden = true; $('menuBtn').setAttribute('aria-expanded', 'false'); };
+let SET = { vol: 100, amb: 100, eng: 100, sfx: 100, res: 300, shake: true, keys: true };
+try { SET = Object.assign(SET, JSON.parse(localStorage.getItem('hem_settings') || '{}')); } catch (e) {}
+function saveSet() { try { localStorage.setItem('hem_settings', JSON.stringify(SET)); } catch (e) {} }
+function applySet() {
+  if (sfxOut) sfxOut.gain.value = muted ? 0 : SET.vol / 100;
+  if (PS1H !== +SET.res) { PS1H = +SET.res; resize(); }
+}
+function syncSetUI() {
+  $('sVol').value = SET.vol; $('sAmb').value = SET.amb; $('sEng').value = SET.eng; $('sSfx').value = SET.sfx;
+  $('sRes').value = String(SET.res); $('sShake').checked = SET.shake; $('sKeys').checked = SET.keys;
+}
+for (const [id, k] of [['sVol', 'vol'], ['sAmb', 'amb'], ['sEng', 'eng'], ['sSfx', 'sfx']]) $(id).addEventListener('input', e => { SET[k] = +e.target.value; applySet(); saveSet(); if (k === 'sfx') playSfx('horn', .3); });
+$('sRes').addEventListener('change', e => { SET.res = +e.target.value; applySet(); saveSet(); });
+$('sShake').addEventListener('change', e => { SET.shake = e.target.checked; saveSet(); });
+$('sKeys').addEventListener('change', e => { SET.keys = e.target.checked; saveSet(); });
+// the pause screen: everything stops, including the order clock
+let paused = false, pausedAt = 0, lastClose = 0;
+function openPause() { if (paused) return; paused = true; pausedAt = performance.now(); syncSetUI(); $('menu').hidden = false; $('menuBtn').setAttribute('aria-expanded', 'true'); }
+function closeMenu() {
+  if (!paused) return; paused = false; lastClose = performance.now(); $('menu').hidden = true; $('menuBtn').setAttribute('aria-expanded', 'false');
+  if (order && order.t0) order.t0 += performance.now() - pausedAt;
+}
+$('pmResume').addEventListener('click', closeMenu);
+$('menu').addEventListener('click', e => { if (e.target.id === 'menu') closeMenu(); });
+addEventListener('keydown', e => {
+  if (e.code !== 'Escape' || dlgOpen || bigOpen || performance.now() - lastClose < 80 || !$('intro').hidden || !$('creator').hidden) return;
+  if (paused) closeMenu(); else if (started) openPause();
+});
+$('pmRestart').addEventListener('click', () => { closeMenu(); dialog(tr('Chơi lại từ đầu', 'Start over'), tr('Xoá hết tiến trình (tiền, đồ đã mua, mục tiêu, ngày) và bắt đầu lại ngày đầu tiên?', 'Delete all progress (money, things you bought, goals, days) and start again from day one?'),
+  [{ label: tr('Xoá và chơi lại', 'Delete and start over'), fn: () => { try { localStorage.removeItem('hem_save_v1' + (REAL ? '_q3' : '')); } catch (e) {} location.reload(); } }, { label: tr('Thôi', 'Cancel'), fn: null }]); });
 $('skipBtn').addEventListener('click', () => {
   closeMenu(); if (!order || order.stage === 'offer') { toast(tr('Chưa có đơn để huỷ', 'No order to cancel')); return; }
   const fine = 5000; earned = Math.max(0, earned - fine); refreshMoney(); toast(tr(`Huỷ đơn, bị phạt ${fmtVnd(fine)}`, `Cancelled, ${fmtVnd(fine)} penalty`));
@@ -2953,6 +3017,7 @@ function drawIcon(g, x, y, kind, big) {
 let bigOpen = false, bigT = 0, bmHalf = 210;
 function bmZoom(f) { bmHalf = Math.max(90, Math.min(520, bmHalf * f)); drawBigMap(); }
 function toggleBigMap(on = !bigOpen) {
+  if (!on) lastClose = performance.now();
   bigOpen = on; $('bigmap').hidden = !on; if (on) { drawBigMap(); legendBigMap(); }
 }
 function legendBigMap() {
@@ -3063,7 +3128,7 @@ function drawMap() {
 }
 
 // ---------- Loop ----------
-const PS1H = 300;   // PlayStation-ish vertical resolution, a little higher so signs stay legible
+let PS1H = 300;   // PlayStation-ish vertical resolution, a little higher so signs stay legible
 function resize() {
   const w = app.clientWidth, h = app.clientHeight, lh = PS1H, lw = Math.max(200, Math.round(PS1H * w / Math.max(1, h)));
   renderer.setPixelRatio(1); renderer.setSize(lw, lh, false); camera.aspect = w / h; camera.updateProjectionMatrix();
@@ -3076,6 +3141,7 @@ stream(bike.x, bike.z, true);
 
 let last = performance.now(), mapTick = 0, lightTick = 0, shake = 0, fastT = 0, hitCd = 0;
 function frame(now) {
+  if (paused) { last = now; if (composer) composer.render(); else renderer.render(scene, camera); requestAnimationFrame(frame); return; }
   const dt = Math.min(0.05, (now - last) / 1000); last = now; hitCd -= dt;
   updateCrash(dt);
   if (bigOpen && (bigT -= dt) < 0) { bigT = 0.25; drawBigMap(); }
@@ -3112,7 +3178,7 @@ function frame(now) {
   if (previewCam) want.set(bike.x + fx * 2.6 - fz * 1.4, 1.65, bike.z + fz * 2.6 + fx * 1.4);
   camPos.lerp(want, previewCam ? 1 - Math.exp(-dt * 14) : 1 - Math.exp(-dt * (3.5 + sp * 3)));
   camera.position.copy(camPos);
-  shake = Math.max(0, shake - dt * 3); const tt = now / 1000, amp = 0.012 * sp + shake * 0.1;
+  shake = Math.max(0, shake - dt * 3); const tt = now / 1000, amp = SET.shake ? 0.012 * sp + shake * 0.1 : 0;
   camera.position.x += (Math.sin(tt * 13) + Math.sin(tt * 7.3)) * amp; camera.position.y += Math.sin(tt * 11) * amp;
   if (previewCam) camLook.set(bike.x - fz * .9, 1.25, bike.z + fx * .9); else camLook.set(bike.x + fx * (4 + sp * 3), 1.3, bike.z + fz * (4 + sp * 3));
   camera.lookAt(camLook); camera.rotateZ(bike.lean * 0.35);
@@ -3131,15 +3197,15 @@ function frame(now) {
     const thr = keys.up ? 1 : 0, sp = Math.abs(bike.v);
     eng.frequency.setTargetAtTime(34 + sp * 7 + thr * 8, ac.currentTime, 0.08); eng2.frequency.setTargetAtTime(68 + sp * 14 + thr * 16, ac.currentTime, 0.08);
     engGain.gain.setTargetAtTime(engLoop ? 0 : 0.018 + thr * 0.012 + sp * 0.001, ac.currentTime, 0.15);
-    if (engLoop) { engLoop.playbackRate.setTargetAtTime(0.7 + sp * 0.05 + thr * 0.12, ac.currentTime, 0.12); engLoopGain.gain.setTargetAtTime(0.14 + thr * 0.14 + sp * 0.01, ac.currentTime, 0.15); }
-    if (rainGain) rainGain.gain.setTargetAtTime(raining ? (wx === 'drizzle' ? .18 : wx === 'storm' ? .6 : .4) * (inRoom ? .5 : 1) : 0, ac.currentTime, 0.8);
+    if (engLoop) { engLoop.playbackRate.setTargetAtTime(0.7 + sp * 0.05 + thr * 0.12, ac.currentTime, 0.12); engLoopGain.gain.setTargetAtTime((0.14 + thr * 0.14 + sp * 0.01) * SET.eng / 100, ac.currentTime, 0.15); }
+    if (rainGain) rainGain.gain.setTargetAtTime(SET.amb / 100 * (raining ? (wx === 'drizzle' ? .18 : wx === 'storm' ? .6 : .4) * (inRoom ? .5 : 1) : 0), ac.currentTime, 0.8);
     passCd -= dt;
     // the city sounds different on a main road, down an alley, and behind your door
     { const e = edgeAt(bike.x, bike.z), al = e ? alleyOfEdge(...e) : null, env = inRoom ? 0 : al && al.level ? 1 : 2;
-      if (ambGain) ambGain.gain.setTargetAtTime([.1, .2, .36][env], ac.currentTime, .6);
+      if (ambGain) ambGain.gain.setTargetAtTime([.1, .2, .36][env] * SET.amb / 100, ac.currentTime, .6);
       if (ambFilter) ambFilter.frequency.setTargetAtTime([450, 2600, 16000][env], ac.currentTime, .6);
       if (engLoopGain && inRoom) engLoopGain.gain.setTargetAtTime(0, ac.currentTime, .2); }
-    let near = 99; for (const r of riders) near = Math.min(near, Math.hypot(r.x - bike.x, r.z - bike.z));
+    let near = 99; for (const r of riders) { const d = Math.hypot(r.x - bike.x, r.z - bike.z); if (r.alive && Number.isFinite(d)) near = Math.min(near, d); }
     npcGain.gain.setTargetAtTime(near < 14 ? 0.012 * (1 - near / 14) : 0, ac.currentTime, 0.15); npcEng.frequency.setTargetAtTime(55 + (14 - Math.min(14, near)) * 3, ac.currentTime, 0.2);
     npcHornCd -= dt; if ((hornT -= dt) < 0) { hornT = 10 + Math.random() * 14; farHorn(); }
   }
@@ -3159,7 +3225,7 @@ function frame(now) {
   else renderer.render(scene, camera);
   requestAnimationFrame(frame);
 }
-applySave(); applyLook(); refreshDynamic(); openApp('order');
+applySave(); applyLook(); refreshDynamic(); openApp('order'); if (+SET.res !== PS1H) { PS1H = +SET.res; resize(); }
 requestAnimationFrame(frame);
 })();
 </script>
