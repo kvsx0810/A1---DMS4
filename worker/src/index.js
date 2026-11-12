@@ -1,6 +1,5 @@
-// Hẻm Vô Tận chat backend: the game's customers talk through Claude without the API key ever reaching the browser.
+// Hẻm Vô Tận chat backend: the game's customers talk through Gemini without the API key ever reaching the browser.
 // POST /chat  { messages: [{ role: "user" | "assistant", content: string }], lang: "vi" | "en" }  ->  { text: string | null }
-import Anthropic from "@anthropic-ai/sdk";
 
 const MAX_TURNS = 10, MAX_CHARS = 1500, PER_MINUTE = 12;
 const hits = new Map();     // best-effort per-IP limit, per Worker instance
@@ -33,27 +32,30 @@ export default {
     const msgs = Array.isArray(body.messages) ? body.messages.slice(-MAX_TURNS) : [];
     if (!msgs.length || msgs[0].role !== "user" || !msgs.every((m, k) => (m.role === (k % 2 ? "assistant" : "user")) && typeof m.content === "string"))
       return json({ error: "bad messages" }, 400, h);
-    const messages = msgs.map(m => ({ role: m.role, content: m.content.slice(0, MAX_CHARS) }));
 
-    const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+    // Gemini calls the assistant side "model"
+    const contents = msgs.map(m => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content.slice(0, MAX_CHARS) }] }));
+    const model = env.MODEL || "gemini-2.5-flash";
+    let r;
     try {
-      const res = await client.beta.messages.create({
-        model: env.MODEL || "claude-opus-5-5",
-        max_tokens: 1024,
-        output_config: { effort: "low" },          // short in-character lines: little reasoning needed
-        betas: ["server-side-fallback-2026-07-01"],
-        fallbacks: "default",                      // if a request is declined, the API retries it on a fallback model
-        system: SYSTEM + (body.lang === "en" ? "\nAlways answer in English." : "\nLuôn trả lời bằng tiếng Việt."),
-        messages,
+      r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SYSTEM + (body.lang === "en" ? "\nAlways answer in English." : "\nLuôn trả lời bằng tiếng Việt.") }] },
+          contents,
+          generationConfig: { maxOutputTokens: 1024, temperature: 0.9 },
+        }),
       });
-      if (res.stop_reason === "refusal") return json({ text: null }, 200, h);   // the game swaps in a written line
-      const text = res.content.filter(b => b.type === "text").map(b => b.text).join("").trim();
-      return json({ text: text || null }, 200, h);
-    } catch (e) {
-      if (e instanceof Anthropic.RateLimitError) return json({ error: "busy" }, 429, h);
-      if (e instanceof Anthropic.APIConnectionError) return json({ error: "upstream unreachable" }, 502, h);
-      if (e instanceof Anthropic.APIError) return json({ error: "upstream error", status: e.status }, 502, h);
-      return json({ error: "server error" }, 500, h);
-    }
+    } catch { return json({ error: "upstream unreachable" }, 502, h); }
+    if (r.status === 429) return json({ error: "busy" }, 429, h);
+    if (!r.ok) return json({ error: "upstream error", status: r.status }, 502, h);
+
+    const data = await r.json();
+    const cand = (data.candidates || [])[0];
+    // blocked or cut off by a safety filter: return nothing, the game swaps in a written line
+    if (!cand || data.promptFeedback?.blockReason || cand.finishReason === "SAFETY") return json({ text: null }, 200, h);
+    const text = (cand.content?.parts || []).map(p => p.text || "").join("").trim();
+    return json({ text: text || null }, 200, h);
   },
 };

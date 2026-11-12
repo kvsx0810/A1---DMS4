@@ -18,7 +18,7 @@ A PS1-style delivery game set on the real street network of District 3, Ho Chi M
 - Roads come from OpenStreetMap. Each way is classed as a street or an alley, and alley levels are worked out from how ways connect.
 - House numbers along main streets are calibrated on real named alleys such as "Hẻm 304 Lê Văn Sỹ".
 - Progress is saved in the browser's `localStorage`.
-- Customer chat uses Claude only when the page is opened as a Claude artifact. Anywhere else it falls back to written lines, and "ask the way" always answers from the game's own map.
+- Customer chat uses Claude when the page is opened as a Claude artifact, and Gemini through the Worker in `worker/` everywhere else. With neither it falls back to written lines. "Ask the way" always answers from the game's own map.
 
 ## Credits
 
@@ -30,13 +30,13 @@ A PS1-style delivery game set on the real street network of District 3, Ho Chi M
 
 ## Chat backend (optional)
 
-Static hosting has no Claude access, so customer chat on GitHub Pages goes through a small Cloudflare Worker in `worker/`. The Worker keeps the Anthropic API key secret, accepts requests only from the game's origin, and limits each visitor to 12 messages a minute.
+Static hosting has no Claude access, so customer chat on GitHub Pages goes through a small Cloudflare Worker in `worker/`. The Worker calls the Gemini API, keeps the key secret, accepts requests only from the game's origin, and limits each visitor to 12 messages a minute.
 
 ```
 cd worker
 npm install
 npx wrangler login
-npx wrangler secret put ANTHROPIC_API_KEY
+npx wrangler secret put GEMINI_API_KEY
 npx wrangler deploy
 ```
 
