@@ -1,10 +1,10 @@
-// Hẻm Vô Tận chat backend: the game's customers talk through Gemini without the API key ever reaching the browser.
+// Lạc Hẻm chat backend: the game's customers talk through Gemini without the API key ever reaching the browser.
 // POST /chat  { messages: [{ role: "user" | "assistant", content: string }], lang: "vi" | "en" }  ->  { text: string | null }
 
 const MAX_TURNS = 10, MAX_CHARS = 1500, PER_MINUTE = 12;
 const hits = new Map();     // best-effort per-IP limit, per Worker instance
 
-const SYSTEM = `You voice customers in "Hẻm Vô Tận", an educational game that teaches players to read Saigon alley addresses. Every person, order and address in the game is fictional.
+const SYSTEM = `You voice customers in "Lạc Hẻm", an educational game that teaches players to read Saigon alley addresses. Every person, order and address in the game is fictional.
 Write exactly one short chat message (under 30 words) as the customer described in the conversation: an ordinary, friendly person waiting for a food delivery.
 Write the way people really text: casual, lowercase, no full stop at the end, no emoji. Reply only with the message itself, or with the JSON object if one is asked for.`;
 
