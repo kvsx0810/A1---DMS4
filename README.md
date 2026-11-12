@@ -20,14 +20,6 @@ A PS1-style delivery game set on the real street network of District 3, Ho Chi M
 - Progress is saved in the browser's `localStorage`.
 - Customer chat uses Claude when the page is opened as a Claude artifact, and Gemini through the Worker in `worker/` everywhere else. With neither it falls back to written lines. "Ask the way" always answers from the game's own map.
 
-## Credits
-
-- Map data © OpenStreetMap contributors, available under the Open Database License (ODbL).
-- Photo textures: Poly Haven (CC0).
-- Sound effects: Epidemic Sound, used under the author's Epidemic Sound subscription.
-- 3D engine: three.js (MIT).
-- Fonts: Be Vietnam Pro, Barlow Condensed and IBM Plex Mono (SIL Open Font License), from Google Fonts.
-
 ## Chat backend (optional)
 
 Static hosting has no Claude access, so customer chat on GitHub Pages goes through a small Cloudflare Worker in `worker/`. The Worker calls the Gemini API, keeps the key secret, accepts requests only from the game's origin, and limits each visitor to 12 messages a minute.
