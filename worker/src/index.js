@@ -13,8 +13,8 @@ function cors(origin, env) {
   const ok = allowed.includes(origin) || /^http:\/\/localhost(:\d+)?$/.test(origin);
   return { "Access-Control-Allow-Origin": ok ? origin : allowed[0] || "*", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "content-type", "Vary": "Origin" };
 }
-// Pick a model the key can actually use: the configured one if it exists, otherwise the newest Flash model
-// on the account. Remembered per Worker instance.
+// Pick a model the key can actually use: the configured one if it exists, otherwise the newest stable
+// Flash-Lite model on the account (the cheapest family). Remembered per Worker instance.
 let picked = null;
 const API = "https://generativelanguage.googleapis.com/v1beta";
 async function chooseModel(env) {
@@ -24,8 +24,10 @@ async function chooseModel(env) {
   const names = ((await r.json()).models || []).filter(m => (m.supportedGenerationMethods || []).includes("generateContent")).map(m => m.name.replace(/^models\//, ""));
   if (env.MODEL && names.includes(env.MODEL)) return (picked = env.MODEL);
   const ver = n => parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/) || [0, 0])[1]);
-  const flash = names.filter(n => /flash/.test(n) && !/image|tts|audio|live|embedding|exp|lite/.test(n)).sort((a, b) => ver(b) - ver(a) || a.length - b.length);
-  return (picked = flash[0] || names.find(n => /gemini/.test(n)) || env.MODEL);
+  // cheapest first: the newest stable Flash-Lite, then the newest stable Flash
+  const ok = n => !/image|tts|audio|live|embedding|exp|preview/.test(n), byVer = (a, b) => ver(b) - ver(a) || a.length - b.length;
+  const lite = names.filter(n => /flash-lite/.test(n) && ok(n)).sort(byVer), flash = names.filter(n => /flash/.test(n) && !/lite/.test(n) && ok(n)).sort(byVer);
+  return (picked = lite[0] || flash[0] || names.find(n => /gemini/.test(n)) || env.MODEL);
 }
 const json = (body, status, headers) => new Response(JSON.stringify(body), { status, headers: { ...headers, "content-type": "application/json" } });
 

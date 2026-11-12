@@ -8,6 +8,6 @@ preview_urls = false
 [vars]
 # where the game is hosted; requests from anywhere else are refused
 ALLOWED_ORIGINS = "https://kvsx0810.github.io"
-# preferred Gemini model; if your key cannot use it, the Worker picks the newest Flash model on your account
-MODEL = "gemini-3.6-flash"
+# cheapest Gemini text model ($0.10 / $0.40 per 1M tokens); if it is retired the Worker picks the newest Flash-Lite
+MODEL = "gemini-2.5-flash-lite"
 # the API key is a secret, never stored here: npx wrangler secret put GEMINI_API_KEY
